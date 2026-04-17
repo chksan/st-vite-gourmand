@@ -1,0 +1,137 @@
+-- =============================================
+-- VITE & GOURMAND - DATABASE CREATION
+-- =============================================
+
+CREATE DATABASE IF NOT EXISTS `vite_gourmand`
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `vite_gourmand`;
+
+-- Users + Roles
+CREATE TABLE users (
+                       id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                       name VARCHAR(255) NOT NULL,
+                       email VARCHAR(255) UNIQUE NOT NULL,
+                       password VARCHAR(255) NOT NULL,
+                       role ENUM('user', 'employe', 'admin') NOT NULL DEFAULT 'user',
+                       phone VARCHAR(20) NULL,
+                       address TEXT NULL,
+                       created_at TIMESTAMP NULL,
+                       updated_at TIMESTAMP NULL
+);
+
+-- Opening hours
+CREATE TABLE horaires (
+                          id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                          day ENUM('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') NOT NULL,
+                          opening_time TIME NOT NULL,
+                          closing_time TIME NOT NULL,
+                          is_closed BOOLEAN DEFAULT FALSE,
+                          created_at TIMESTAMP NULL,
+                          updated_at TIMESTAMP NULL
+);
+
+-- Allergens
+CREATE TABLE allergens (
+                           id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                           name VARCHAR(100) NOT NULL,
+                           created_at TIMESTAMP NULL,
+                           updated_at TIMESTAMP NULL
+);
+
+-- Dishes
+CREATE TABLE plats (
+                       id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                       type ENUM('starter', 'main', 'dessert') NOT NULL,
+                       title VARCHAR(255) NOT NULL,
+                       description TEXT NULL,
+                       created_at TIMESTAMP NULL,
+                       updated_at TIMESTAMP NULL
+);
+
+-- Many-to-many: Dish <-> Allergen
+CREATE TABLE plat_allergen (
+                               plat_id BIGINT UNSIGNED NOT NULL,
+                               allergen_id BIGINT UNSIGNED NOT NULL,
+                               PRIMARY KEY (plat_id, allergen_id),
+                               FOREIGN KEY (plat_id) REFERENCES plats(id) ON DELETE CASCADE,
+                               FOREIGN KEY (allergen_id) REFERENCES allergens(id) ON DELETE CASCADE
+);
+
+-- Menus
+CREATE TABLE menus (
+                       id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                       title VARCHAR(255) NOT NULL,
+                       description TEXT NOT NULL,
+                       theme ENUM('Christmas', 'Easter', 'Classic', 'Event') NOT NULL,
+                       regime ENUM('classic', 'vegetarian', 'vegan', 'gluten_free') NOT NULL DEFAULT 'classic',
+                       min_personnes INT NOT NULL,
+                       price DECIMAL(10,2) NOT NULL,
+                       stock INT NOT NULL DEFAULT 10,
+                       conditions TEXT NULL,
+                       images JSON NULL,
+                       created_at TIMESTAMP NULL,
+                       updated_at TIMESTAMP NULL
+);
+
+-- Many-to-many: Menu <-> Dish
+CREATE TABLE menu_plat (
+                           menu_id BIGINT UNSIGNED NOT NULL,
+                           plat_id BIGINT UNSIGNED NOT NULL,
+                           PRIMARY KEY (menu_id, plat_id),
+                           FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE,
+                           FOREIGN KEY (plat_id) REFERENCES plats(id) ON DELETE CASCADE
+);
+
+-- Orders
+CREATE TABLE orders (
+                        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                        user_id BIGINT UNSIGNED NOT NULL,
+                        menu_id BIGINT UNSIGNED NOT NULL,
+                        nb_personnes INT NOT NULL,
+                        total_price DECIMAL(10,2) NOT NULL,
+                        delivery_address TEXT NOT NULL,
+                        delivery_date DATE NOT NULL,
+                        delivery_time TIME NOT NULL,
+                        delivery_fee DECIMAL(8,2) DEFAULT 0.00,
+                        status ENUM('pending', 'accepted', 'preparing', 'delivering', 'delivered', 'waiting_material', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+                        created_at TIMESTAMP NULL,
+                        updated_at TIMESTAMP NULL,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                        FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
+);
+
+-- Order status history (for tracking)
+CREATE TABLE order_status_history (
+                                      id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                                      order_id BIGINT UNSIGNED NOT NULL,
+                                      status ENUM('pending', 'accepted', 'preparing', 'delivering', 'delivered', 'waiting_material', 'completed', 'cancelled') NOT NULL,
+                                      comment TEXT NULL,
+                                      created_at TIMESTAMP NULL,
+                                      FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+
+-- Reviews
+CREATE TABLE reviews (
+                         id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                         order_id BIGINT UNSIGNED NOT NULL,
+                         user_id BIGINT UNSIGNED NOT NULL,
+                         rating TINYINT UNSIGNED NOT NULL CHECK (rating BETWEEN 1 AND 5),
+                         comment TEXT NULL,
+                         is_validated BOOLEAN DEFAULT FALSE,
+                         validated_by BIGINT UNSIGNED NULL,
+                         created_at TIMESTAMP NULL,
+                         updated_at TIMESTAMP NULL,
+                         FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                         FOREIGN KEY (validated_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Contact form messages
+CREATE TABLE contacts (
+                          id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                          name VARCHAR(255) NOT NULL,
+                          email VARCHAR(255) NOT NULL,
+                          subject VARCHAR(255) NOT NULL,
+                          message TEXT NOT NULL,
+                          created_at TIMESTAMP NULL
+);
