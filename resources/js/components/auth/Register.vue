@@ -1,13 +1,28 @@
 <template>
-  <div class="max-w-md mx-auto mt-10">
-    <h2 class="text-3xl font-bold text-center mb-6">Créer un compte</h2>
-    <form @submit.prevent="handleRegister">
-      <input v-model="form.name" type="text" placeholder="Nom complet" class="w-full p-3 border mb-4" required />
-      <input v-model="form.email" type="email" placeholder="Email" class="w-full p-3 border mb-4" required />
-      <input v-model="form.phone" type="tel" placeholder="Téléphone" class="w-full p-3 border mb-4" />
-      <input v-model="form.password" type="password" placeholder="Mot de passe" class="w-full p-3 border mb-4" required />
-      <input v-model="form.password_confirmation" type="password" placeholder="Confirmer le mot de passe" class="w-full p-3 border mb-6" required />
-      <button type="submit" class="w-full bg-primary text-white py-3 rounded">S'inscrire</button>
+  <div class="max-w-md mx-auto mt-12 p-8 bg-white rounded-xl shadow">
+    <h2 class="text-3xl font-bold text-center mb-8">Créer un compte</h2>
+
+    <form @submit.prevent="handleRegister" class="space-y-6">
+      <input v-model="form.name" type="text" placeholder="Nom complet" class="w-full p-4 border rounded-2xl" required />
+
+      <input v-model="form.email" type="email" placeholder="Adresse email" class="w-full p-4 border rounded-2xl" required />
+
+      <textarea
+          v-model="form.address"
+          placeholder="Adresse postale complète (rue, code postal, ville)"
+          rows="3"
+          class="w-full p-4 border rounded-2xl resize-none"
+          required>
+      </textarea>
+
+      <input v-model="form.phone" type="tel" placeholder="Numéro de GSM" class="w-full p-4 border rounded-2xl" required />
+
+      <input v-model="form.password" type="password" placeholder="Mot de passe" class="w-full p-4 border rounded-2xl" required />
+      <input v-model="form.password_confirmation" type="password" placeholder="Confirmer le mot de passe" class="w-full p-4 border rounded-2xl" required />
+
+      <button type="submit" class="w-full bg-primary text-white py-4 rounded-2xl text-lg font-semibold">
+        Créer mon compte
+      </button>
     </form>
   </div>
 </template>
@@ -24,6 +39,7 @@ const form = ref({
   name: '',
   email: '',
   phone: '',
+  address: '',
   password: '',
   password_confirmation: ''
 });

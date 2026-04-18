@@ -33,7 +33,6 @@ class MenuController extends Controller
         return response()->json($menus);
     }
     public function show($id){
-        dd(Menu::query()->get());
         $menu = Menu::with('plats')->findOrFail($id);
         return response()->json($menu);
     }

@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Controller;
+
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
+use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+
 
 class OrderController extends Controller
 {
@@ -14,31 +18,21 @@ class OrderController extends Controller
         $request->validate([
             'menu_id'          => 'required|exists:menus,id',
             'nb_personnes'     => 'required|integer|min:2',
-            'delivery_address' => 'required|string',
+            'delivery_address' => 'required|string|min:10',
             'delivery_date'    => 'required|date',
             'delivery_time'    => 'required',
-            'distance_km'      => 'nullable|numeric|min:0',
         ]);
 
-        $menu = \App\Models\Menu::findOrFail($request->menu_id);
+        $menu = Menu::findOrFail($request->menu_id);
 
-
-        // 0,59€ / KM
-        $baseFee = 5.00;
-        $distanceKm = $request->distance_km ?? 0;
-
-        // Inside bordeaux = No extra fees.
-        $isInBordeaux = stripos($request->delivery_address, 'bordeaux') !== false;
-
-        $deliveryFee = $isInBordeaux
-            ? $baseFee
-            : $baseFee + (0.59 * $distanceKm);
+        // Calculate delivery fee using Nominatim API
+        $deliveryFee = $this->calculateDeliveryFee($request->delivery_address);
 
         // Base price calculation
         $basePrice = $menu->price;
         $total = $basePrice * ($request->nb_personnes / $menu->min_personnes);
 
-        // 10% discount if +5 persons above minimum
+        // 10% discount if 5+ persons above minimum
         if ($request->nb_personnes >= $menu->min_personnes + 5) {
             $total *= 0.9;
         }
@@ -60,11 +54,72 @@ class OrderController extends Controller
         OrderStatusHistory::create([
             'order_id' => $order->id,
             'status'   => 'pending',
-            'comment'  => 'Commande créée',
+            'comment'  => 'Order created',
         ]);
 
         return response()->json([
             'order'   => $order,
-            'message' => 'Commande enregistrée avec succès'
+            'message' => 'Order placed successfully'
         ], 201);
-    }}
+    }
+
+    /**
+     * Calculate delivery fee using Nominatim (OpenStreetMap)
+     */
+    private function calculateDeliveryFee(string $address): float
+    {
+        $baseFee = 5.00;
+
+        // If address is in Bordeaux → base fee only
+        if (stripos($address, 'bordeaux') !== false) {
+            return $baseFee;
+        }
+
+        // Call Nominatim API to get coordinates
+        $response = Http::withHeaders([
+            'User-Agent' => 'ViteGourmand-ECF/1.0'
+        ])->get('https://nominatim.openstreetmap.org/search', [
+            'q'      => $address,
+            'format' => 'json',
+            'limit'  => 1
+        ]);
+
+        if ($response->successful() && count($response->json()) > 0) {
+            $data = $response->json()[0];
+            $lat = (float)$data['lat'];
+            $lon = (float)$data['lon'];
+
+            // Bordeaux coordinates
+            $bordeauxLat = 44.8378;
+            $bordeauxLon = -0.5792;
+
+            $distanceKm = $this->haversineGreatCircleDistance($bordeauxLat, $bordeauxLon, $lat, $lon);
+
+            return $baseFee + (0.59 * $distanceKm);
+        }
+
+        // Fallback if API fails
+        return $baseFee + (0.59 * 15);
+    }
+
+    /**
+     * Haversine formula - calculate distance in km
+     */
+    private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo): float
+    {
+        $earthRadius = 6371;
+
+        $latFrom = deg2rad($latitudeFrom);
+        $lonFrom = deg2rad($longitudeFrom);
+        $latTo   = deg2rad($latitudeTo);
+        $lonTo   = deg2rad($longitudeTo);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        return $angle * $earthRadius;
+    }
+}
