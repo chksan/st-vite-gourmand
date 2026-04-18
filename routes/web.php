@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\OrderController;
 
 
 
@@ -14,6 +15,7 @@ Route::post('/v1/login', [AuthController::class, 'login']);
 
 Route::middleware('auth')->group(function () {
     Route::post('/v1/register', [AuthController::class, 'register']);
+    Route::post('/commande', [App\Http\Controllers\Api\OrderController::class, 'store']);
     Route::get('/v1/menus', [\App\Http\Controllers\Api\MenuController::class, 'index']);
     Route::get('/v1/menus/{id}', [\App\Http\Controllers\Api\MenuController::class, 'show']);
     Route::get('/v1/me', [AuthController::class, 'me'])->name('api.me');
