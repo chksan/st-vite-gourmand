@@ -1,6 +1,5 @@
--- =============================================
--- VITE & GOURMAND - DATABASE CREATION
--- =============================================
+-- VITE & GOURMAND
+
 
 CREATE DATABASE IF NOT EXISTS `vite_gourmand`
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -22,7 +21,7 @@ CREATE TABLE users (
 -- Opening hours
 CREATE TABLE horaires (
                           id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                          day ENUM('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') NOT NULL,
+                          day ENUM('Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche') NOT NULL,
                           opening_time TIME NOT NULL,
                           closing_time TIME NOT NULL,
                           is_closed BOOLEAN DEFAULT FALSE,
@@ -41,14 +40,14 @@ CREATE TABLE allergens (
 -- Dishes
 CREATE TABLE plats (
                        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                       type ENUM('starter', 'main', 'dessert') NOT NULL,
+                       type ENUM('entree', 'plat', 'dessert') NOT NULL,
                        title VARCHAR(255) NOT NULL,
                        description TEXT NULL,
                        created_at TIMESTAMP NULL,
                        updated_at TIMESTAMP NULL
 );
 
--- Many-to-many: Dish <-> Allergen
+-- Dish <-> Allergen
 CREATE TABLE plat_allergen (
                                plat_id BIGINT UNSIGNED NOT NULL,
                                allergen_id BIGINT UNSIGNED NOT NULL,
@@ -62,8 +61,8 @@ CREATE TABLE menus (
                        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                        title VARCHAR(255) NOT NULL,
                        description TEXT NOT NULL,
-                       theme ENUM('Christmas', 'Easter', 'Classic', 'Event') NOT NULL,
-                       regime ENUM('classic', 'vegetarian', 'vegan', 'gluten_free') NOT NULL DEFAULT 'classic',
+                       theme VARCHAR(50) NOT NULL,           -- Changed from ENUM
+                       regime VARCHAR(50) NOT NULL DEFAULT 'classique',  -- Changed from ENUM
                        min_personnes INT NOT NULL,
                        price DECIMAL(10,2) NOT NULL,
                        stock INT NOT NULL DEFAULT 10,
@@ -100,7 +99,7 @@ CREATE TABLE orders (
                         FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
 );
 
--- Order status history (for tracking)
+-- Order status history
 CREATE TABLE order_status_history (
                                       id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                                       order_id BIGINT UNSIGNED NOT NULL,
@@ -126,7 +125,7 @@ CREATE TABLE reviews (
                          FOREIGN KEY (validated_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Contact form messages
+-- Contact messages
 CREATE TABLE contacts (
                           id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                           name VARCHAR(255) NOT NULL,
