@@ -6,6 +6,7 @@ const routes = [
     { path: '/login', name: 'login', component: () => import('../components/auth/Login.vue') },
     { path: '/register', name: 'register', component: () => import('../components/auth/Register.vue') },
     { path: '/menus', name: 'menus', component: () => import('../components/Menus.vue') },
+    { path: '/menu/:id', name: 'menu-detail', component: () => import('../components/MenuDetails.vue') },
 
     {
         path: '/espace-utilisateur',
