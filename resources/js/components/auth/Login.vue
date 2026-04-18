@@ -39,15 +39,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted} from 'vue';
 import { useAuth } from '../../Helpers/auth';
 import { useRouter } from 'vue-router';
 
-const { login } = useAuth();
+const { login, getMe } = useAuth();
 const router = useRouter();
 
 const email = ref('');
 const password = ref('');
+
+
 
 const handleLogin = async () => {
   try {
