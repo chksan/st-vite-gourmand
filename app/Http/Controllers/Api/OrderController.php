@@ -19,7 +19,7 @@ class OrderController extends Controller
             'menu_id'          => 'required|exists:menus,id',
             'nb_personnes'     => 'required|integer|min:2',
             'delivery_address' => 'required|string|min:10',
-            'delivery_date'    => 'required|date',
+            'delivery_date' => 'required|date|after_or_equal:today',
             'delivery_time'    => 'required',
         ]);
 
@@ -50,6 +50,10 @@ class OrderController extends Controller
             'delivery_fee'     => round($deliveryFee, 2),
             'status'           => 'pending',
         ]);
+
+
+
+        //Implement paypal sandbox in the future?
 
         OrderStatusHistory::create([
             'order_id' => $order->id,
@@ -122,4 +126,47 @@ class OrderController extends Controller
 
         return $angle * $earthRadius;
     }
+
+
+    /**
+     * Get all user order
+     */
+    public function index()
+    {
+        $orders = Order::with('menu')
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($orders);
+    }
+
+    /**
+     * Cancel an order
+     */
+    public function cancel(Order $order)
+    {
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if ($order->status !== 'pending') {
+            return response()->json([
+                'message' => 'Seules les commandes en attente peuvent être annulées'
+            ], 400);
+        }
+
+        $order->update(['status' => 'cancelled']);
+
+        OrderStatusHistory::create([
+            'order_id' => $order->id,
+            'status'   => 'cancelled',
+            'comment'  => 'Commande annulée par le client',
+        ]);
+
+        return response()->json([
+            'message' => 'Commande annulée avec succès'
+        ]);
+    }
+
 }

@@ -15,6 +15,7 @@ const routes = [
             requiresAuth: true,
         }
     },
+
     {
         path: '/espace-utilisateur',
         name: 'user-space',

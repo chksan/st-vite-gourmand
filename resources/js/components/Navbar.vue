@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-dark text-white shadow">
+  <nav class="bg-dark text-dark shadow">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <h1 class="text-2xl font-bold text-primary">Vite & Gourmand</h1>
