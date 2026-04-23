@@ -129,14 +129,20 @@ class OrderController extends Controller
 
 
     /**
-     * Get all user order
+     * Get all user order (Paginated)
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('menu')
+        $query = Order::with('menu')
             ->where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
+
+        // Filter by status if provided
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(5);   // 5 orders per page
 
         return response()->json($orders);
     }
