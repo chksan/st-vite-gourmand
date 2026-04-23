@@ -1,56 +1,90 @@
 <template>
-  <div class="max-w-4xl mx-auto px-6 py-8">
-    <h1 class="text-4xl font-bold mb-8">Passer commande</h1>
+  <div class="max-w-5xl mx-auto px-6 py-10">
+    <h1 class="text-4xl font-bold mb-2">Finaliser votre commande</h1>
+    <p class="text-gray-600 mb-8">Veuillez vérifier les informations ci-dessous</p>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-      <div class="bg-white p-8 rounded-3xl shadow">
+      <div class="bg-white p-8 rounded-3xl shadow-lg">
         <form @submit.prevent="submitOrder" class="space-y-6">
+
           <div>
-            <label class="block mb-2">Nom complet</label>
-            <input v-model="form.name" class="w-full p-4 border rounded-2xl" readonly />
+            <label class="block mb-2 font-medium">Nom complet</label>
+            <input v-model="form.name" class="w-full p-4 border rounded-2xl bg-gray-100" readonly />
           </div>
 
           <div>
-            <label class="block mb-2">Adresse de livraison</label>
-            <input v-model="form.delivery_address" class="w-full p-4 border rounded-2xl" required />
+            <label class="block mb-2 font-medium">Adresse de livraison complète</label>
+            <textarea
+                v-model="form.delivery_address"
+                rows="3"
+                class="w-full p-4 border rounded-2xl"
+                placeholder="Ex: 45 Avenue de la République, 33100 Bordeaux"
+                required>
+            </textarea>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block mb-2">Date</label>
+              <label class="block mb-2 font-medium">Date de prestation</label>
               <input v-model="form.delivery_date" type="date" class="w-full p-4 border rounded-2xl" required />
             </div>
             <div>
-              <label class="block mb-2">Heure</label>
+              <label class="block mb-2 font-medium">Heure souhaitée</label>
               <input v-model="form.delivery_time" type="time" class="w-full p-4 border rounded-2xl" required />
             </div>
           </div>
 
           <div>
-            <label class="block mb-2">Nombre de personnes (min {{ menu?.min_personnes || 2 }})</label>
-            <input v-model="form.nb_personnes" type="number" :min="menu?.min_personnes || 2" class="w-full p-4 border rounded-2xl" required />
+            <label class="block mb-2 font-medium">Nombre de personnes (minimum {{ menu?.min_personnes || 2 }})</label>
+            <input v-model="form.nb_personnes" type="number"
+                   :min="menu?.min_personnes || 2"
+                   class="w-full p-4 border rounded-2xl" required />
           </div>
 
-          <div>
-            <label class="block mb-2">Distance (km) — si hors Bordeaux</label>
-            <input v-model="form.distance_km" type="number" step="0.1" min="0" class="w-full p-4 border rounded-2xl" placeholder="Ex: 12.5" />
-          </div>
-
-          <button type="submit" class="w-full bg-accent py-5 text-xl font-semibold rounded-3xl text-white">
+          <button type="submit"
+                  class="w-full bg-accent hover:bg-orange-600 text-white py-5 text-xl font-semibold rounded-3xl transition">
             Valider la commande — {{ totalPrice.toFixed(2) }} €
           </button>
         </form>
       </div>
 
       <div class="bg-gray-50 p-8 rounded-3xl">
-        <h2 class="font-semibold mb-6">Récapitulatif</h2>
-        <div v-if="menu" class="space-y-4">
-          <p class="text-2xl">{{ menu.title }}</p>
-          <p class="text-4xl font-bold">{{ totalPrice.toFixed(2) }} €</p>
-          <p class="text-sm text-gray-500">
-            Livraison : {{ deliveryFee.toFixed(2) }} €
-            <span v-if="form.distance_km > 0 && !isInBordeaux" class="text-red-600">(+ {{ (0.59 * form.distance_km).toFixed(2) }} € / km)</span>
-          </p>
+        <h2 class="font-semibold text-xl mb-6">Récapitulatif</h2>
+
+        <div v-if="menu" class="space-y-6">
+          <div>
+            <p class="text-2xl font-medium">{{ menu.title }}</p>
+            <p class="text-gray-600 mt-1">{{ menu.description }}</p>
+          </div>
+
+          <div class="border-t border-b py-6">
+            <div class="flex justify-between text-lg">
+              <span>Menu ({{ form.nb_personnes }} personnes)</span>
+              <span class="font-semibold">{{ (menu.price * (form.nb_personnes / menu.min_personnes)).toFixed(2) }} €</span>
+            </div>
+
+            <div v-if="form.nb_personnes >= menu.min_personnes + 5" class="text-green-600 text-sm mt-1">
+              ✓ Réduction de 10% appliquée
+            </div>
+          </div>
+
+          <div class="flex justify-between text-lg">
+            <span>Frais de livraison</span>
+            <span class="font-semibold">5,00 €</span>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl text-sm">
+            <p class="font-medium text-blue-800">Informations livraison :</p>
+            <p class="text-blue-700 mt-1">
+              • 5 € de base<br>
+              • + 0,59 € par km si la livraison est <strong>hors de Bordeaux</strong>
+            </p>
+          </div>
+
+          <div class="pt-6 border-t flex justify-between text-2xl font-bold">
+            <span>Total</span>
+            <span>{{ totalPrice.toFixed(2) }} €</span>
+          </div>
         </div>
       </div>
     </div>
@@ -73,26 +107,14 @@ const form = ref({
   delivery_date: '',
   delivery_time: '',
   nb_personnes: 4,
-  menu_id: null,
-  distance_km: 0
-});
-
-const isInBordeaux = computed(() =>
-    form.value.delivery_address.toLowerCase().includes('bordeaux')
-);
-
-const deliveryFee = computed(() => {
-  const base = 5.00;
-  return isInBordeaux.value
-      ? base
-      : base + (0.59 * (form.value.distance_km || 0));
+  menu_id: null
 });
 
 const totalPrice = computed(() => {
   if (!menu.value) return 0;
   let total = menu.value.price * (form.value.nb_personnes / menu.value.min_personnes);
   if (form.value.nb_personnes >= menu.value.min_personnes + 5) total *= 0.9;
-  return total + deliveryFee.value;
+  return total + 5;
 });
 
 const loadMenu = async () => {
@@ -104,9 +126,13 @@ const loadMenu = async () => {
 };
 
 const submitOrder = async () => {
-  await axios.post('/v1/commande', form.value);
-  alert('Commande passée avec succès !');
-  router.push('/espace-utilisateur');
+  try {
+    await axios.post('/v1/commande', form.value);
+    alert('✅ Commande enregistrée avec succès !');
+    router.push('/espace-utilisateur');
+  } catch (error) {
+    alert('Erreur : ' + (error.response?.data?.message || 'Veuillez réessayer'));
+  }
 };
 
 onMounted(loadMenu);
