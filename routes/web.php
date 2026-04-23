@@ -18,6 +18,7 @@ Route::get('/v1/menus/{id}', [\App\Http\Controllers\Api\MenuController::class, '
 
 Route::middleware('auth')->group(function () {
     Route::post('/v1/commande', [App\Http\Controllers\Api\OrderController::class, 'store']);
+    Route::post('/v1/profile', [App\Http\Controllers\Api\AuthController::class, 'updateProfile']);
     Route::get('/v1/orders', [App\Http\Controllers\Api\OrderController::class, 'index']);
     Route::post('/v1/orders/{order}/cancel', [App\Http\Controllers\Api\OrderController::class, 'cancel']);
     Route::get('/v1/me', [AuthController::class, 'me'])->name('api.me');
