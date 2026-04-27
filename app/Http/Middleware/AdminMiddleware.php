@@ -17,7 +17,7 @@ class AdminMiddleware
     {
         //Admin check
         if (Auth::check() && Auth::user()->role !== 'admin') {
-            return response()->json(['message' => 'Accès interdit.'], 403);
+            return response()->json(['message' => 'Access restricted.'], 403);
         }
         return $next($request);
     }

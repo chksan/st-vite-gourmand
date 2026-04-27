@@ -23,33 +23,23 @@ Route::middleware('auth')->prefix('v1')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::prefix('employe')->group(function () {
-        Route::middleware(function ($request, $next) {
-            if (!in_array(Auth::user()->role, ['employe', 'admin'])) {
-                return response()->json(['message' => 'Accès refusé'], 403);
-            }
-            return $next($request);
-        })->group(function () {
-            Route::get('/orders', [EmployeController::class, 'orders']);
-            Route::post('/orders/{order}/status', [EmployeController::class, 'updateStatus']);
-
-            Route::get('/menus', [EmployeController::class, 'menus']);
-            Route::post('/menus', [EmployeController::class, 'storeMenu']);
-            Route::put('/menus/{menu}', [EmployeController::class, 'updateMenu']);
-            Route::delete('/menus/{menu}', [EmployeController::class, 'deleteMenu']);
-
-            Route::get('/plats', [EmployeController::class, 'plats']);
-            Route::post('/plats', [EmployeController::class, 'storePlat']);
-            Route::put('/plats/{plat}', [EmployeController::class, 'updatePlat']);
-            Route::delete('/plats/{plat}', [EmployeController::class, 'deletePlat']);
-
-            Route::get('/horaires', [EmployeController::class, 'horaires']);
-            Route::put('/horaires/{horaire}', [EmployeController::class, 'updateHoraire']);
-
-            Route::get('/reviews', [EmployeController::class, 'reviews']);
-            Route::post('/reviews/{review}/validate', [EmployeController::class, 'validateReview']);
-        });
+    Route::prefix('employe')->middleware(\App\Http\Middleware\EmployeMiddleware::class)->group(function () {
+        Route::get('/orders', [EmployeController::class, 'orders']);
+        Route::post('/orders/{order}/status', [EmployeController::class, 'updateStatus']);
+        Route::get('/menus', [EmployeController::class, 'menus']);
+        Route::post('/menus', [EmployeController::class, 'storeMenu']);
+        Route::put('/menus/{menu}', [EmployeController::class, 'updateMenu']);
+        Route::delete('/menus/{menu}', [EmployeController::class, 'deleteMenu']);
+        Route::get('/plats', [EmployeController::class, 'plats']);
+        Route::post('/plats', [EmployeController::class, 'storePlat']);
+        Route::put('/plats/{plat}', [EmployeController::class, 'updatePlat']);
+        Route::delete('/plats/{plat}', [EmployeController::class, 'deletePlat']);
+        Route::get('/horaires', [EmployeController::class, 'horaires']);
+        Route::put('/horaires/{horaire}', [EmployeController::class, 'updateHoraire']);
+        Route::get('/reviews', [EmployeController::class, 'reviews']);
+        Route::post('/reviews/{review}/validate', [EmployeController::class, 'validateReview']);
     });
+
 });
 
 Route::get('/', function () {
