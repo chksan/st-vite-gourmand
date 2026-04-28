@@ -22,6 +22,12 @@ const routes = [
         component: () => import('../components/UserSpace.vue'),
         meta: {requiresAuth: true}
     },
+    {
+        path: '/employe',
+        name: 'employe-space',
+        component: () => import('../components/EmployeSpace.vue'),
+        meta: { requiresAuth: true, requiresRole: 'employe' }
+    },
 
     {
         path: '/contact',
@@ -45,6 +51,10 @@ router.beforeEach(async (to) => {
 
     if (to.meta.requiresAuth && !user.value) {
         return '/login';
+    }
+
+    if (to.meta.requiresRole && user.value && user.value.role !== to.meta.requiresRole) {
+        return '/';
     }
 
     return true;

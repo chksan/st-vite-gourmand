@@ -10,5 +10,10 @@ class OrderStatusHistory extends Model
 {
     public $timestamps = false;
     protected $table = 'order_status_history';
+    public function statusHistories()
+
+    {
+        return $this->hasMany(OrderStatusHistory::class)->orderByDesc('created_at');
+    }
 
 }

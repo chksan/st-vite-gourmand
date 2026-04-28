@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable(['day', 'opening_time', 'closing_time', 'is_closed'])]
-class Horaire extends Model
+class Horaires extends Model
 {
     use HasFactory;
 

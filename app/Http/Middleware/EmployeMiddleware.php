@@ -11,7 +11,7 @@ class EmployeMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        
+
         if (Auth::check() && !in_array(Auth::user()->role, ['employe', 'admin'])) {
             return response()->json(['message' => 'Access restricted.'], 403);
         }

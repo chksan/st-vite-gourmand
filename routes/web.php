@@ -23,22 +23,34 @@ Route::middleware('auth')->prefix('v1')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::prefix('employe')->middleware(\App\Http\Middleware\EmployeMiddleware::class)->group(function () {
-        Route::get('/orders', [EmployeController::class, 'orders']);
-        Route::post('/orders/{order}/status', [EmployeController::class, 'updateStatus']);
-        Route::get('/menus', [EmployeController::class, 'menus']);
-        Route::post('/menus', [EmployeController::class, 'storeMenu']);
-        Route::put('/menus/{menu}', [EmployeController::class, 'updateMenu']);
-        Route::delete('/menus/{menu}', [EmployeController::class, 'deleteMenu']);
-        Route::get('/plats', [EmployeController::class, 'plats']);
-        Route::post('/plats', [EmployeController::class, 'storePlat']);
-        Route::put('/plats/{plat}', [EmployeController::class, 'updatePlat']);
-        Route::delete('/plats/{plat}', [EmployeController::class, 'deletePlat']);
-        Route::get('/horaires', [EmployeController::class, 'horaires']);
-        Route::put('/horaires/{horaire}', [EmployeController::class, 'updateHoraire']);
-        Route::get('/reviews', [EmployeController::class, 'reviews']);
-        Route::post('/reviews/{review}/validate', [EmployeController::class, 'validateReview']);
-    });
+    Route::prefix('employe')
+        ->middleware(\App\Http\Middleware\EmployeMiddleware::class)
+        ->group(function () {
+            Route::get('/orders', [EmployeController::class, 'orders']);
+            Route::get('/orders/{order}', [EmployeController::class, 'showOrder']);
+            Route::post('/orders/{order}/status', [EmployeController::class, 'updateStatus']);
+
+            Route::get('/menus', [EmployeController::class, 'menus']);
+            Route::post('/menus', [EmployeController::class, 'storeMenu']);
+            Route::put('/menus/{menu}', [EmployeController::class, 'updateMenu']);
+            Route::delete('/menus/{menu}', [EmployeController::class, 'deleteMenu']);
+
+            Route::get('/plats', [EmployeController::class, 'plats']);
+            Route::post('/plats', [EmployeController::class, 'storePlat']);
+            Route::put('/plats/{plat}', [EmployeController::class, 'updatePlat']);
+            Route::delete('/plats/{plat}', [EmployeController::class, 'deletePlat']);
+
+            Route::get('/allergens', [EmployeController::class, 'allergens']);
+            Route::post('/allergens', [EmployeController::class, 'storeAllergen']);
+            Route::delete('/allergens/{allergen}', [EmployeController::class, 'deleteAllergen']);
+
+            Route::get('/horaires', [EmployeController::class, 'horaires']);
+            Route::put('/horaires/{horaire}', [EmployeController::class, 'updateHoraire']);
+
+            Route::get('/reviews', [EmployeController::class, 'reviews']);
+            Route::post('/reviews/{review}/validate', [EmployeController::class, 'validateReview']);
+            Route::post('/reviews/{review}/reject', [EmployeController::class, 'rejectReview']);
+        });
 
 });
 

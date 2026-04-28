@@ -10,4 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 class Plat extends Model
 {
     use HasFactory;
+
+    public function allergens()
+    {
+        return $this->belongsToMany(Allergen::class, 'plat_allergen');
+    }
+
 }
