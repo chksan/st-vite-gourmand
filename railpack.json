@@ -1,8 +1,8 @@
 {
   "phases": {
-    "extensions": {
+    "install:phpExtensions": {
       "cmds": [
-        "install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo session tokenizer xml mongodb"
+        "install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo session tokenizer xml pdo_mysql mongodb"
       ]
     }
   }
