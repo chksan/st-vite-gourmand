@@ -1,3 +1,10 @@
+FROM node:20-slim AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
 FROM dunglas/frankenphp:php8.3-bookworm
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -16,12 +23,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 COPY . .
+COPY --from=frontend /app/public/build ./public/build
 
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-scripts --no-interaction
 
-RUN npm install && npm run build
-
-RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && chmod -R a+rw storage
+RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && \
+    chmod -R a+rw storage
 
 EXPOSE 8080
 
