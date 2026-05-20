@@ -1,6 +1,9 @@
 FROM dunglas/frankenphp:php8.3-bookworm
 
-RUN install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo pdo_mysql session tokenizer xml mongodb
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo pdo_mysql session tokenizer xml mongodb
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
