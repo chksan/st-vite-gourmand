@@ -10,7 +10,7 @@ class MenuController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Menu::query();
+        $query = Menu::query()->where('stock', '>', 0); // only show available menus
 
         $query->when($request->filled('max_price') && is_numeric($request->max_price), function ($q) use ($request) {
             $q->where('price', '<=', $request->max_price);
@@ -27,9 +27,7 @@ class MenuController extends Controller
         $query->when($request->filled('min_personnes') && is_numeric($request->min_personnes), function ($q) use ($request) {
             $q->where('min_personnes', '>=', $request->min_personnes);
         });
-
         $menus = $query->get();
-
         return response()->json($menus);
     }
     public function show($id){

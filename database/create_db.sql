@@ -2,7 +2,7 @@
 
 
 CREATE DATABASE IF NOT EXISTS `vite_gourmand`
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `vite_gourmand`;
 
 -- Users + Roles
@@ -12,8 +12,10 @@ CREATE TABLE users (
                        email VARCHAR(255) UNIQUE NOT NULL,
                        password VARCHAR(255) NOT NULL,
                        role ENUM('user', 'employe', 'admin') NOT NULL DEFAULT 'user',
+                       is_active BOOLEAN NOT NULL DEFAULT TRUE,
                        phone VARCHAR(20) NULL,
                        address TEXT NULL,
+                       remember_token VARCHAR(100) NULL,
                        created_at TIMESTAMP NULL,
                        updated_at TIMESTAMP NULL
 );
@@ -61,8 +63,8 @@ CREATE TABLE menus (
                        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                        title VARCHAR(255) NOT NULL,
                        description TEXT NOT NULL,
-                       theme VARCHAR(50) NOT NULL,           -- Changed from ENUM
-                       regime VARCHAR(50) NOT NULL DEFAULT 'classique',  -- Changed from ENUM
+                       theme VARCHAR(50) NOT NULL,
+                       regime VARCHAR(50) NOT NULL DEFAULT 'classique',
                        min_personnes INT NOT NULL,
                        price DECIMAL(10,2) NOT NULL,
                        stock INT NOT NULL DEFAULT 10,
@@ -93,10 +95,14 @@ CREATE TABLE orders (
                         delivery_time TIME NOT NULL,
                         delivery_fee DECIMAL(8,2) DEFAULT 0.00,
                         status ENUM('pending', 'accepted', 'preparing', 'delivering', 'delivered', 'waiting_material', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+                        cancel_reason TEXT NULL,
+                        contact_mode ENUM('gsm', 'email') NULL,
+                        cancelled_by BIGINT UNSIGNED NULL,
                         created_at TIMESTAMP NULL,
                         updated_at TIMESTAMP NULL,
                         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                        FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
+                        FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE,
+                        FOREIGN KEY (cancelled_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- Order status history
@@ -105,19 +111,23 @@ CREATE TABLE order_status_history (
                                       order_id BIGINT UNSIGNED NOT NULL,
                                       status ENUM('pending', 'accepted', 'preparing', 'delivering', 'delivered', 'waiting_material', 'completed', 'cancelled') NOT NULL,
                                       comment TEXT NULL,
+                                      changed_by BIGINT UNSIGNED NULL,
                                       created_at TIMESTAMP NULL,
-                                      FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+                                      FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+                                      FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- Reviews
+-- NULL = pending, TRUE = validated, FALSE = rejected
 CREATE TABLE reviews (
                          id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                          order_id BIGINT UNSIGNED NOT NULL,
                          user_id BIGINT UNSIGNED NOT NULL,
                          rating TINYINT UNSIGNED NOT NULL CHECK (rating BETWEEN 1 AND 5),
                          comment TEXT NULL,
-                         is_validated BOOLEAN DEFAULT FALSE,
+                         is_validated BOOLEAN NULL DEFAULT NULL,
                          validated_by BIGINT UNSIGNED NULL,
+                         validated_at TIMESTAMP NULL,
                          created_at TIMESTAMP NULL,
                          updated_at TIMESTAMP NULL,
                          FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,

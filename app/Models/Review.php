@@ -10,4 +10,14 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     use HasFactory;
+
+    public function order()
+    {
+        return $this->belongsTo(\App\Models\Order::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
 }

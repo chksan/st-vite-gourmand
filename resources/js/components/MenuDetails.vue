@@ -1,72 +1,70 @@
 <template>
-  <div class="max-w-6xl mx-auto px-6 py-8">
-    <button @click="goBack" class="mb-6 text-primary flex items-center gap-2 hover:underline">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <button @click="goBack" class="flex items-center gap-2 text-[#C1813A] hover:underline mb-8 font-medium">
       ← Retour aux menus
     </button>
 
     <div v-if="menu" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-      <!-- Left: Image -->
       <div>
         <img
-            v-if="menu.images && menu.images.length"
+            v-if="menu.images?.length"
             :src="`/storage/${menu.images[0]}`"
-            class="w-full rounded-3xl shadow-xl"
-            alt="Image du menu"
+            class="w-full rounded-3xl shadow-xl object-cover"
+            alt="Menu {{ menu.title }}"
         >
+        <img v-else src="/images/default-menu.jpg" class="w-full rounded-3xl shadow-xl" alt="Menu">
       </div>
 
-      <!-- Right: Details -->
       <div>
-        <div class="flex gap-3 mb-4">
-          <span class="px-4 py-1 bg-primary text-white text-sm rounded-full">{{ menu.theme }}</span>
-          <span class="px-4 py-1 bg-gray-200 text-sm rounded-full">{{ menu.regime }}</span>
+        <div class="flex gap-3 mb-6">
+          <span class="px-5 py-1.5 bg-[#C1813A] text-white text-sm font-semibold rounded-full">{{ menu.theme }}</span>
+          <span class="px-5 py-1.5 bg-[#E8C98A] text-[#3D2B1F] text-sm font-semibold rounded-full">{{ menu.regime }}</span>
         </div>
 
-        <h1 class="text-4xl font-bold">{{ menu.title }}</h1>
-        <p class="text-gray-600 mt-3 text-lg leading-relaxed">{{ menu.description }}</p>
+        <h1 class="text-4xl font-bold text-[#3D2B1F]">{{ menu.title }}</h1>
+        <p class="text-[#7A6E62] mt-4 text-lg">{{ menu.description }}</p>
 
-        <!-- Plats with Allergens -->
-        <div class="mt-10">
-          <h3 class="font-semibold mb-5 text-xl">Composition du menu</h3>
+        <div class="mt-6 inline-flex items-center gap-2 px-5 py-2 bg-[#F5F0E8] rounded-2xl">
+          <span class="text-sm font-medium text-[#3D2B1F]">Stock restant :</span>
+          <span :class="menu.stock <= 5 ? 'text-red-600 font-bold' : 'text-[#C1813A] font-bold'" class="text-xl">
+            {{ menu.stock }} places
+          </span>
+          <span v-if="menu.stock <= 5" class="text-red-600 text-sm">⚠️ Dernières places</span>
+        </div>
 
-          <div v-for="plat in menu.plats" :key="plat.id" class="mb-6 p-5 bg-gray-50 rounded-2xl">
+        <div class="mt-12">
+          <h3 class="font-semibold text-xl mb-6 text-[#3D2B1F]">Composition du menu</h3>
+          <div v-for="plat in menu.plats" :key="plat.id" class="mb-8 p-6 bg-[#F9F6F1] rounded-2xl">
             <div class="flex justify-between items-start">
               <div>
                 <strong class="text-lg">{{ plat.title }}</strong>
-                <span class="ml-3 uppercase text-xs font-medium text-gray-500">({{ plat.type }})</span>
+                <span class="ml-3 text-xs uppercase text-[#7A6E62]">({{ plat.type }})</span>
               </div>
-
-              <!-- Allergens -->
-              <div v-if="plat.allergens && plat.allergens.length" class="flex flex-wrap gap-2 justify-end">
-                <span
-                    v-for="allergen in plat.allergens"
-                    :key="allergen.id"
-                    class="text-xs px-3 py-1 bg-red-100 text-red-700 rounded-full font-medium">
-                  {{ allergen.name }}
+              <div v-if="plat.allergens?.length" class="flex flex-wrap gap-2">
+                <span v-for="a in plat.allergens" :key="a.id" class="text-xs px-3 py-1 bg-[#8B4A3C]/10 text-[#8B4A3C] rounded-full">
+                  ⚠ {{ a.name }}
                 </span>
               </div>
             </div>
-            <p class="text-sm text-gray-600 mt-2">{{ plat.description }}</p>
+            <p class="text-[#7A6E62] mt-3">{{ plat.description }}</p>
           </div>
         </div>
 
-        <!-- Important Conditions -->
-        <div class="mt-8 p-6 bg-red-50 border border-red-200 rounded-2xl">
-          <h4 class="font-semibold text-red-700 mb-2">⚠️ Conditions importantes</h4>
-          <p class="text-red-700 leading-relaxed">{{ menu.conditions }}</p>
+        <div class="mt-8 p-6 bg-red-50 border border-[#8B4A3C]/30 rounded-2xl">
+          <h4 class="font-semibold text-[#8B4A3C]">⚠️ Conditions importantes</h4>
+          <p class="text-[#8B4A3C] mt-2">{{ menu.conditions }}</p>
         </div>
 
-        <!-- Price & Button -->
-        <div class="mt-10 flex justify-between items-end">
+        <div class="mt-12 flex flex-col sm:flex-row justify-between items-end gap-6">
           <div>
-            <span class="text-5xl font-bold">{{ menu.price }} €</span>
-            <span class="text-xl text-gray-500"> / {{ menu.min_personnes }} personnes minimum</span>
+            <span class="text-5xl font-bold text-[#C1813A]">{{ menu.price }} €</span>
+            <span class="text-[#7A6E62]"> / personne</span>
           </div>
-
           <button
               @click="goToOrder"
-              class="bg-accent hover:bg-orange-600 text-white px-10 py-4 rounded-2xl text-xl font-semibold transition">
-            Commander ce menu
+              :disabled="menu.stock <= 0"
+              class="bg-[#C1813A] hover:bg-[#A76D2F] disabled:bg-gray-400 text-white px-12 py-5 rounded-2xl text-xl font-semibold transition">
+            {{ menu.stock > 0 ? 'Commander ce menu' : 'Stock épuisé' }}
           </button>
         </div>
       </div>
@@ -88,7 +86,11 @@ const fetchMenu = async () => {
 };
 
 const goBack = () => router.push('/menus');
-const goToOrder = () => router.push(`/commande?menu_id=${menu.value.id}`);
+const goToOrder = () => {
+  if (menu.value.stock > 0) {
+    router.push(`/commande?menu_id=${menu.value.id}`);
+  }
+};
 
 onMounted(fetchMenu);
 </script>

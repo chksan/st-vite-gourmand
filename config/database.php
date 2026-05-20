@@ -114,6 +114,15 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+
+        //using Mongodb (My choice for Admin stats)
+        'mongodb' => [
+            'driver'   => 'mongodb',
+            'host'     => env('MONGODB_HOST', '127.0.0.1'),
+            'port'     => env('MONGODB_PORT', 27017),
+            'database' => env('MONGODB_DATABASE', 'vite_gourmand_stats'),
+        ],
+
     ],
 
     /*

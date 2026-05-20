@@ -3,9 +3,19 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
-@source '../**/*.js';
+@source '../**/*.vue';           /* Important pour Vue */
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Couleurs de la charte graphique Vite & Gourmand */
+    --color-espresso: #3D2B1F;
+    --color-amber:    #C1813A;
+    --color-wheat:    #E8C98A;
+    --color-cream:    #F5F0E8;
+    --color-offwhite: #F9F6F1;
+    --color-herb:     #4A6741;
+    --color-terra:    #8B4A3C;
+    --color-stone:    #7A6E62;
 }

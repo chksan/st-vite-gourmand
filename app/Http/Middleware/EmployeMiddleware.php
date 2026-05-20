@@ -11,9 +11,12 @@ class EmployeMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-
         if (Auth::check() && !in_array(Auth::user()->role, ['employe', 'admin'])) {
             return response()->json(['message' => 'Access restricted.'], 403);
+        }
+
+        if (Auth::check() && !Auth::user()->is_active) {
+            return response()->json(['message' => 'Votre compte a été désactivé.'], 403);
         }
 
         return $next($request);

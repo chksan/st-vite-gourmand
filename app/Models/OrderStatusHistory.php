@@ -13,7 +13,7 @@ class OrderStatusHistory extends Model
     public function statusHistories()
 
     {
-        return $this->hasMany(OrderStatusHistory::class)->orderByDesc('created_at');
+        return $this->hasMany(OrderStatusHistory::class)->orderByDesc('created_at','desc');
     }
 
 }
