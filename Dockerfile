@@ -6,7 +6,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo pdo_mysql session tokenizer xml
 
 RUN apt-get update && apt-get install -y libssl-dev pkg-config && \
-    pecl install mongodb && \
+    pecl install mongodb-1.17.3 && \
     docker-php-ext-enable mongodb
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
