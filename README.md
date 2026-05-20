@@ -1,58 +1,217 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Vite & Gourmand
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Traiteur d'exception à Bordeaux** — Site web réalisé pour l'ECF Développeur Web & Web Mobile.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Présentation du Projet
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Vite & Gourmand est une plateforme de réservation de menus traiteur haut de gamme basée à Bordeaux. Julie et José proposent des prestations gourmandes sur mesure pour tous types d'événements (Noël, Pâques, mariages, entreprises, etc.).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠 Technologies utilisées
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Backend** : Laravel 13
+- **Frontend** : Vue 3 + Vite + Tailwind CSS
+- **Base de données relationnelle** : MySQL
+- **Base de données non relationnelle** : MongoDB (statistiques administrateur)
+- **Email** : Resend
+- **Authentification** : Laravel Session (Auth natif Laravel)
+- **Déploiement** : Railway (backend + base de données) + Cloudflare (domaine)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 📋 Installation en local
 
-## Agentic Development
+> Les étapes suivantes supposent un environnement **Laragon** (Windows).
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 1. Cloner le repository
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/chksan/st-vite-gourmand.git
+cd st-vite-gourmand
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Installation des dépendances
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Configuration
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Voici les variables essentielles à configurer dans votre `.env` :
 
-## Security Vulnerabilities
+```env
+APP_NAME="Vite & Gourmand"
+APP_ENV=local
+APP_KEY=                        # généré via php artisan key:generate
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+APP_LOCALE=fr
+APP_FALLBACK_LOCALE=fr
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# ====================================
+# COMPANY INFO
+# ====================================
+MAIL_COMPANY_EMAIL="julie@vitegourmand.fr"
+MAIL_COMPANY_NAME="Vite & Gourmand"
 
-## License
+# ====================================
+# BASE DE DONNÉES MySQL
+# ====================================
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=vite_gourmand
+DB_USERNAME=root
+DB_PASSWORD=
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# ====================================
+# MongoDB (stats admin)
+# ====================================
+MONGODB_HOST=127.0.0.1
+MONGODB_PORT=27017
+MONGODB_DATABASE=vite_gourmand_stats
+
+# ====================================
+# EMAIL (Resend) https://resend.com/
+# ====================================
+MAIL_MAILER=resend
+RESEND_API_KEY="re_xxxxxxxxxxxxxxxxxxxxxxxxxx"
+MAIL_FROM_ADDRESS="contact@vite-gourmand.fr?"
+MAIL_FROM_NAME="Vite & Gourmand"
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+CACHE_STORE=database
+QUEUE_CONNECTION=database
+BCRYPT_ROUNDS=12
+```
+
+### 4. Base de données
+
+Exécutez les étapes dans cet ordre :
+
+```bash
+# 1. Importer la structure de la base de données
+mysql -u root -p vite_gourmand < database/create_db.sql
+
+# 2. Lancer les migrations Laravel
+php artisan migrate
+
+# 3. Importer les données de test
+mysql -u root -p vite_gourmand < database/seed_db.sql
+```
+
+> MongoDB doit être installé et démarré séparément avant de lancer l'application.
+
+### 5. Lancement
+
+```bash
+# Terminal 2
+npm run dev
+```
+
+L'application est accessible sur `http://localhost:5173` ou sur le vhost créer par Laragon (Dans mon cas vite-gourmand.test).
+
+---
+
+## 🚢 Déploiement
+
+L'application est déployée sur **Railway** (hébergement + base de données MySQL & Mongodb).  
+Le nom de domaine est géré via **Cloudflare** (DNS + proxy).
+
+URL de production : `https://vite-gourmand.chksan.dev`
+
+---
+
+## 🔑 Identifiants de test
+
+| Rôle           | Email                 | Mot de passe |
+|----------------|-----------------------|--------------|
+| Administrateur | julie@vitegourmand.fr | password     |
+| Employé        | jose@vitegourmand.fr  | password     |
+| Client         | client@test.fr        | password     |
+
+> ⚠️ Le compte Administrateur ne peut pas être créé depuis l'application. Il est seeded directement en base de données.
+
+---
+
+## 📁 Structure du projet
+
+```text
+st-vite-gourmand/
+├─ app/                  # Logique backend Laravel (Models, Controllers, Middleware)
+├─ bootstrap/            # Initialisation du framework
+├─ config/               # Fichiers de configuration Laravel
+├─ database/             # Migrations, create_db.sql, seed_db.sql
+├─ public/               # Assets publics
+├─ resources/
+│  ├─ js/                # Composants Vue 3
+│  └─ css/               # Styles Tailwind CSS
+├─ routes/               # Routes API et web (api.php)
+├─ storage/              # Uploads (images menus) et logs
+└─ .env.example          # Template de configuration d'environnement
+```
+
+---
+
+## 🌿 Gestion des branches Git
+
+```
+main                  ← branche de production (stable)
+└── develop           ← branche de développement
+```
+
+Chaque fonctionnalité est développée sur une branche dédiée issue de `develop`.  
+Après validation, merge vers `develop`, puis vers `main` une fois la version stable.
+
+---
+
+## ✨ Fonctionnalités principales
+
+- Authentification complète + réinitialisation de mot de passe
+- Catalogue de menus avec filtres (prix, thème, régime, personnes) et allergènes
+- Système de commande avec calcul de frais de livraison (5€ + 0.59€/km hors Bordeaux)
+- Réduction de 10% pour les commandes de 5 personnes de plus que le minimum
+- Gestion du stock en temps réel
+- Upload d'images pour les menus
+- Espace Employé (commandes, menus, plats, horaires, avis)
+- Espace Administrateur (statistiques MongoDB, chiffre d'affaires, gestion employés)
+- Emails transactionnels via Resend (bienvenue, confirmation commande, réinitialisation, avis)
+- Conformité RGPD et accessibilité RGAA
+
+---
+
+## 🔒 Sécurité
+
+- Mots de passe hashés via bcrypt (12 rounds)
+- Sessions sécurisées via base de données
+- Middleware de rôles (utilisateur / employé / admin)
+- Validation stricte de toutes les entrées côté serveur
+- Protection CSRF native Laravel
+
+---
+
+## 📄 Documents fournis
+
+- Charte Graphique (PDF)
+- Maquettes Desktop + Mobile — 3 bureautiques & 3 mobiles (PDF)
+- Mentions Légales + CGV
+- Manuel d'utilisation avec identifiants (PDF)
+- Fichiers SQL (`create_db.sql` + `seed_db.sql`)
+- Documentation technique (MCD, diagrammes d'utilisation et de séquence)
+- Documentation de gestion de projet
+
+---
+
+**Projet ECF Développeur Web & Web Mobile**  
+Mai 2026
