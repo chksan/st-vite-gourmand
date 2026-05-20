@@ -1,0 +1,219 @@
+{
+  "__plugin-vue_export-helper-jUItB9cv.js": {
+    "file": "assets/_plugin-vue_export-helper-jUItB9cv.js",
+    "name": "_plugin-vue_export-helper"
+  },
+  "_auth-CQX6368d.js": {
+    "file": "assets/auth-CQX6368d.js",
+    "name": "auth",
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_axios-tbSdy_wN.js"
+    ]
+  },
+  "_axios-tbSdy_wN.js": {
+    "file": "assets/axios-tbSdy_wN.js",
+    "name": "axios",
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "_vue-router-D9OJkT6z.js": {
+    "file": "assets/vue-router-D9OJkT6z.js",
+    "name": "vue-router",
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "_vue.esm-bundler-4TI4oH2k.js": {
+    "file": "assets/vue.esm-bundler-4TI4oH2k.js",
+    "name": "vue.esm-bundler"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BPBaWP7H.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_axios-tbSdy_wN.js",
+      "_vue-router-D9OJkT6z.js",
+      "_auth-CQX6368d.js"
+    ],
+    "dynamicImports": [
+      "resources/js/components/Home.vue",
+      "resources/js/components/auth/Login.vue",
+      "resources/js/components/auth/Register.vue",
+      "resources/js/components/Menus.vue",
+      "resources/js/components/MenuDetails.vue",
+      "resources/js/components/Order.vue",
+      "resources/js/components/UserSpace.vue",
+      "resources/js/components/EmployeSpace.vue",
+      "resources/js/components/AdminSpace.vue",
+      "resources/js/components/auth/ForgotPassword.vue",
+      "resources/js/components/auth/ResetPassword.vue",
+      "resources/js/components/MentionsLegales.vue",
+      "resources/js/components/CGV.vue",
+      "resources/js/components/Contact.vue"
+    ]
+  },
+  "resources/js/components/AdminSpace.vue": {
+    "file": "assets/AdminSpace-DkdXV9h1.js",
+    "name": "AdminSpace",
+    "src": "resources/js/components/AdminSpace.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "resources/js/components/CGV.vue": {
+    "file": "assets/CGV-BoeBVBTX.js",
+    "name": "CGV",
+    "src": "resources/js/components/CGV.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "resources/js/components/Contact.vue": {
+    "file": "assets/Contact-BZzRjCy8.js",
+    "name": "Contact",
+    "src": "resources/js/components/Contact.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "resources/js/components/EmployeSpace.vue": {
+    "file": "assets/EmployeSpace-DI81udnn.js",
+    "name": "EmployeSpace",
+    "src": "resources/js/components/EmployeSpace.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "resources/js/components/Home.vue": {
+    "file": "assets/Home-D0UcORgl.js",
+    "name": "Home",
+    "src": "resources/js/components/Home.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "resources/js/components/MentionsLegales.vue": {
+    "file": "assets/MentionsLegales-CTBs40lk.js",
+    "name": "MentionsLegales",
+    "src": "resources/js/components/MentionsLegales.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js"
+    ]
+  },
+  "resources/js/components/MenuDetails.vue": {
+    "file": "assets/MenuDetails-CKcxiTyt.js",
+    "name": "MenuDetails",
+    "src": "resources/js/components/MenuDetails.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_vue-router-D9OJkT6z.js"
+    ]
+  },
+  "resources/js/components/Menus.vue": {
+    "file": "assets/Menus-CoI9tmxK.js",
+    "name": "Menus",
+    "src": "resources/js/components/Menus.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_vue-router-D9OJkT6z.js"
+    ]
+  },
+  "resources/js/components/Order.vue": {
+    "file": "assets/Order-DP7DRLKg.js",
+    "name": "Order",
+    "src": "resources/js/components/Order.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_vue-router-D9OJkT6z.js",
+      "_auth-CQX6368d.js"
+    ]
+  },
+  "resources/js/components/UserSpace.vue": {
+    "file": "assets/UserSpace-Brz5ODo4.js",
+    "name": "UserSpace",
+    "src": "resources/js/components/UserSpace.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_auth-CQX6368d.js"
+    ]
+  },
+  "resources/js/components/auth/ForgotPassword.vue": {
+    "file": "assets/ForgotPassword-CNj6w69w.js",
+    "name": "ForgotPassword",
+    "src": "resources/js/components/auth/ForgotPassword.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-jUItB9cv.js",
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_axios-tbSdy_wN.js"
+    ],
+    "css": [
+      "assets/ForgotPassword-CFUI4H0O.css"
+    ]
+  },
+  "resources/js/components/auth/Login.vue": {
+    "file": "assets/Login-BAT7M82p.js",
+    "name": "Login",
+    "src": "resources/js/components/auth/Login.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-jUItB9cv.js",
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_vue-router-D9OJkT6z.js",
+      "_auth-CQX6368d.js"
+    ],
+    "css": [
+      "assets/Login-DK2Xb2Lb.css"
+    ]
+  },
+  "resources/js/components/auth/Register.vue": {
+    "file": "assets/Register-fzjqmspr.js",
+    "name": "Register",
+    "src": "resources/js/components/auth/Register.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_vue-router-D9OJkT6z.js",
+      "_auth-CQX6368d.js"
+    ]
+  },
+  "resources/js/components/auth/ResetPassword.vue": {
+    "file": "assets/ResetPassword-D7Ax99vP.js",
+    "name": "ResetPassword",
+    "src": "resources/js/components/auth/ResetPassword.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "__plugin-vue_export-helper-jUItB9cv.js",
+      "_vue.esm-bundler-4TI4oH2k.js",
+      "_axios-tbSdy_wN.js",
+      "_vue-router-D9OJkT6z.js"
+    ],
+    "css": [
+      "assets/ResetPassword-3xp9oirv.css"
+    ]
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-C8pPhopy.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/sass/app.scss",
+    "isEntry": true
+  }
+}
