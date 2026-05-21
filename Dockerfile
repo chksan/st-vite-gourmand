@@ -16,7 +16,6 @@ RUN apt-get update && apt-get install -y \
         libssl-dev pkg-config git unzip \
     && pecl install mongodb-1.17.3 \
     && docker-php-ext-enable mongodb \
-    && echo "extension=mongodb.so" >> /usr/local/etc/php/php.ini \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -32,4 +31,4 @@ RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs boots
 
 EXPOSE 8080
 
-CMD ["/start-container.sh"]
+CMD ["frankenphp", "run"]
