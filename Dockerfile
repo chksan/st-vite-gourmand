@@ -29,6 +29,8 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-scrip
 RUN mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache && \
     chmod -R a+rw storage
 
+COPY Caddyfile /etc/caddy/Caddyfile
+
 EXPOSE 8080
 
 CMD ["frankenphp", "run"]
